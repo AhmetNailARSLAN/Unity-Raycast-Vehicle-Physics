@@ -19,4 +19,14 @@ public class CarStats : ScriptableObject
     [Header("Wheel Settings")]
     [Tooltip("Radius of the wheel visual mesh.")]
     public float WheelRadius = 0.4f;
+    
+    [Header("Engine & Steering")]
+    [Tooltip("Motor torque applied to drive wheels (Newton Meter).")]
+    public float MotorTorque = 1500f;
+
+    [Tooltip("Maximum steering angle for front wheels (Degrees).")]
+    public float MaxSteerAngle = 30f;
+
+    [Tooltip("Grip factor. 0 = Ice, 1 = Sticky Asphalt.")]
+    public float TireGripFactor = 0.8f;
 }

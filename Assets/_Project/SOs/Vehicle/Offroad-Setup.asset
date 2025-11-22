@@ -16,4 +16,7 @@ MonoBehaviour:
   SpringTravel: 0.3
   SpringStiffness: 30000
   DamperStiffness: 4000
-  WheelRadius: 0.4
+  WheelRadius: 0.2
+  MotorTorque: 2000
+  MaxSteerAngle: 40
+  TireGripFactor: 0.9

@@ -69,10 +69,57 @@ public class WheelController : MonoBehaviour
             // Apply the calculated force at the specific position of the wheel
             // Using transform.up ensures the force is applied relative to the car's rotation (normal to the chassis)
             _carRb.AddForceAtPosition(transform.up * totalUpwardForce, transform.position);
+
+            ApplySidewaysFriction();
         }
         else
         {
             IsGrounded = false;
         }
+    }
+
+    /// <summary>
+    /// Rotates the wheel transform for steering.
+    /// </summary>
+    public void Steer(float steerAngle)
+    {
+        transform.localRotation = Quaternion.Euler(Vector3.up * steerAngle);
+    }
+
+    /// <summary>
+    /// Applies acceleration force.
+    /// </summary>
+    public void Accelerate(float currentTorque)
+    {
+        if (IsGrounded)
+        {
+            _carRb.AddForceAtPosition(transform.forward * currentTorque, transform.position);
+        }
+    }
+
+    /// <summary>
+    /// Kills sideways velocity to prevent infinite drifting (The "Tire Grip" logic).
+    /// </summary>
+    private void ApplySidewaysFriction()
+    {
+        if (!IsGrounded) return;
+
+        // 1. Calculate velocity relative to the wheel's direction
+        // transform.right is the sideways direction
+        Vector3 velocityAtWheel = _carRb.GetPointVelocity(transform.position);
+
+        // Dot product gives us how much we are moving sideways (Projection)
+        float sidewaysSpeed = Vector3.Dot(velocityAtWheel, transform.right);
+
+        // 2. Calculate counter-force to stop sliding
+        // Formula: -Mass * ChangeInVelocity / TimeStep * GripFactor
+        // Using a simplified impulse model for stability:
+
+        float desiredAcceleration = -sidewaysSpeed * _stats.TireGripFactor;
+
+        // Apply this force on the sideways axis (transform.right)
+        Vector3 frictionForce = transform.right * desiredAcceleration * (_carRb.mass / 4f); // Divide by 4 assuming 4 wheels sharing load
+
+        _carRb.AddForceAtPosition(frictionForce, transform.position);
     }
 }
