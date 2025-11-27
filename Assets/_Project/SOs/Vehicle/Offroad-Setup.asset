@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6fc9d0780a7674aba3baafdc8cdfe7, type: 3}
   m_Name: Offroad-Setup
   m_EditorClassIdentifier: 
-  RestLength: 0.8
+  RestLength: 0.4
   SpringTravel: 0.3
   SpringStiffness: 30000
   DamperStiffness: 4000
-  WheelRadius: 0.2
-  MotorTorque: 2000
+  WheelRadius: 0.07
+  MotorTorque: 1500
   MaxSteerAngle: 40
   TireGripFactor: 0.9

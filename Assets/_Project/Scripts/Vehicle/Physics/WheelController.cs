@@ -27,7 +27,9 @@ public class WheelController : MonoBehaviour
     public void HandlePhysics()
     {
         Vector3 rayOrigin = transform.position;
-        Vector3 rayDirection = -transform.up;
+        // Use the car's down direction instead of wheel's local down
+        // This prevents steering rotation from affecting raycast direction
+        Vector3 rayDirection = -_carRb.transform.up;
 
         // Calculate the total length needed for the ray (Suspension Rest Length + Wheel Radius)
         float maxRayLength = _stats.RestLength + _stats.WheelRadius;
@@ -56,8 +58,8 @@ public class WheelController : MonoBehaviour
             // --- 2. CALCULATE DAMPER FORCE (Shock Absorption) ---
 
             // Get the velocity of the vehicle at the wheel's position
-            // We project this velocity onto the local up vector of the wheel to get vertical speed
-            float wheelVelocity = Vector3.Dot(_carRb.GetPointVelocity(transform.position), transform.up);
+            // We project this velocity onto the car's up vector to get vertical speed
+            float wheelVelocity = Vector3.Dot(_carRb.GetPointVelocity(transform.position), _carRb.transform.up);
 
             // Damping force opposes the velocity
             float damperForce = wheelVelocity * _stats.DamperStiffness;
@@ -67,8 +69,8 @@ public class WheelController : MonoBehaviour
             float totalUpwardForce = springForce - damperForce;
 
             // Apply the calculated force at the specific position of the wheel
-            // Using transform.up ensures the force is applied relative to the car's rotation (normal to the chassis)
-            _carRb.AddForceAtPosition(transform.up * totalUpwardForce, transform.position);
+            // Using car's transform.up ensures the force is applied relative to the car's rotation (normal to the chassis)
+            _carRb.AddForceAtPosition(_carRb.transform.up * totalUpwardForce, transform.position);
 
             ApplySidewaysFriction();
         }
